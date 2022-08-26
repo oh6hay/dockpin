@@ -48,6 +48,8 @@ or control output yourself:
 $ dockpin docker pin -f - < Dockerfile.template > Dockerfile
 ```
 
+To simply check if a Dockerfile is pinned to the most recent hash, run `dockpin docker check -f your-Dockerfile`.
+
 ## Apt pinning
 
 You should create a file called dockpin-apt.pkgs which contains one Debian/Ubuntu package per line. After that you can run `dockpin apt pin` which generates dockpin-apt.lock, which contains the URLs and size/hash of each .deb file to use.
@@ -59,3 +61,13 @@ The easiest way to get the `dockpin` binary in your Docker build is by grabbing 
 Note that the Debian/Ubuntu archives will eventually delete the old package you pinned from their mirrors. At that point you'll get an error when you try to build (rather than a silent upgrade). You can reproduce your build by somehow finding the old .deb file and changing the lock file to point at whichever URL you put it at. You can also COPY it into /var/cache/apt/archives/ and `dockpin apt install` will use that without downloading.
 
 We rely on apt(8) to figure out which dependencies you already have / need to install. However, that does mean that we need to do the pinning on the same base image as you'll run `dockpin apt install`. We try to guess this automatically by parsing your Dockerfile, but that might fail and you'll need to pass `--base-image=ubuntu:focal` (or whatever image you use).
+
+## Running using Docker
+
+A `Dockerfile` is provided to build `dockpin`. Compared to the [original Dockpin](https://github.com/Jille/dockpin), this fork is based on Ubuntu instead of the `golang` base so that it's more easily extendable. The [`tool.sh`](tool.sh) script is provided to build the Docker image and run it.
+
+Usage: `./tool.sh build` to build, `./tool.sh check Dockerfile` to check if the `Dockerfile` is pinned against the newest hash, and `./tool.sh pin Dockerfile` pins the Dockerfile.
+
+Also see [dockpin-action](https://github.com/oh6hay/dockpin-action) if you want to run `dockpin docker check` as a [GitHub Action](https://github.com/features/actions).
+
+There's also a readily built Docker image at [docker hub](https://hub.docker.com/r/oh2osq/dockpin).

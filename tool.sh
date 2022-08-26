@@ -16,13 +16,22 @@ elif [ "$1" == "pin" ] ; then
 	echo usage: $0 pin Dockerfile 
 	exit 1
     fi
-    docker run -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/tmp --rm -t oh2osq/dockpin docker pin -f /tmp/$2
+    docker run -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/tmp --rm -t oh2osq/dockpin dockpin docker pin -f /tmp/$2
 elif [ "$1" == "check" ] ; then
     if [ -z "$2" ] ; then
 	echo the Dockerfile argument is empty
 	echo usage: $0 check Dockerfile 
 	exit 1
     fi
-    docker run -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/tmp --rm -t oh2osq/dockpin docker check -f /tmp/$2
+    docker run -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/tmp --rm -t oh2osq/dockpin dockpin docker check -f /tmp/$2
+elif [ "$1" == "resolve" ] ; then
+    if [ -z "$2" ] ; then
+	echo the Dockerfile argument is empty
+	echo usage: $0 resolve docker-base-image-name
+	exit 1
+    fi
+    docker run -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/tmp --rm -t oh2osq/dockpin dockpin docker resolve $2
+elif [ "$1" == "shell" ] ; then
+    docker run -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/tmp --rm -it oh2osq/dockpin /bin/bash
 fi
 
